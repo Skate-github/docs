@@ -1,0 +1,212 @@
+---
+title: "Stateless App Cookbook"
+description: 'Build a stateless app with Skate infrastructure'
+icon: "browser"
+---
+
+This doc assumes basic understanding of how Skate apps work and the concept of splitting Stateless apps into Kernel and Periphery components.
+
+## Key Concepts
+
+From a developer’s perspective, before we dive any further, there are three key concepts that you need to understand
+
+### 1. State flows from Kernel to Periphery
+
+<Frame caption="Stateless app flow">
+  <img src="/images/developers/app_architecture.png" alt="stateless-app-architecture" />
+</Frame>
+
+For all Stateless apps, **state flows unidirectionally from Skate to other periphery chains.** Skate serves as the kernel that stores all critical state variables and logic, while connected periphery chains perform the necessary auxiliary actions.
+
+### 2. Intents as the source
+
+```solidity IMessageBox.sol
+struct IntentData {
+    address appAddress;
+    bytes intentCalldata;
+}
+
+struct Intent {
+    IntentData intentData;
+    address user;
+    bytes signature;
+}
+```
+
+Intents encapsulate all the necessary information required for interactions within your app. The `processIntent(IMessageBox.Intent calldata intent)` function acts as the **only entry point** for any crosschain interaction performed on your app.
+
+### 3. Tasks as the messenger for crosschain interactions.
+
+```solidity IMessageBox.sol
+struct Task {
+		//appAddress: refers to the contract address on periphery chains
+	  address appAddress;
+	  //taskCalldata: refers to the contract address on periphery chains
+	  bytes taskCalldata;
+	  //user: refers to the user signing this intent
+	  address user;
+	  //chainId: refers to the contract address on periphery chains
+	  uint256 chainId;
+}
+```
+
+Tasks play a crucial role in **communicating state information retrieved from Skate** to other periphery chains. Developers need to take note that **a task only needs to be created for any intents that require crosschain interactions.** 
+
+Tasks serve as a reliable source of truth for executors, facilitating the transmission of information from Stateless apps to periphery chains. Executors rely on tasks to execute the intents accurately and effectively. By creating tasks for necessary intents, developers enable seamless crosschain interactions and ensure that the required actions are performed on the designated periphery chains.
+
+## Kernel
+
+For any Stateless App, it has to be **inherit** **SkateApp.sol abstract contract.** This contract helps bootstrap most of the function calls that you need to tap into Skate and allows you to focus on building custom logic specific to your application.
+
+### 1. processIntent
+
+<Frame caption="Stateless app execution flow">
+  <img src="/images/developers/execution_flow.png" alt="stateless-app-execution-flow" />
+</Frame>
+
+```solidity MessageBox.sol
+function processIntent(IMessageBox.Intent calldata intent)
+    external
+    virtual
+    override
+{
+    // pass into a super function
+    (bool success, bytes memory data) =
+        address(this).call(intent.intentData.intentCalldata);
+    require(success, IntentProcessingReverted());
+
+    IMessageBox.Task[] memory tasks = abi.decode(data, (IMessageBox.Task[]));
+    _messageBox.submitTasks(tasks, intent);
+}
+```
+
+Above, we provided some diagrams to allow you to understand the flow of processIntent, this function is the crux for building any Skate app. Remember that processIntent is the **only entry point for crosschain interactions.** 
+
+In this function: 
+
+1. Executing the calldata provided by the intent
+
+Based on the intent, the calldata will be a function that is defined in your kernel contract. This is why this function performs a low level solidity call **on the calling contract.** 
+
+```solidity
+modifier onlyContract() {
+  require(msg.sender == address(this), OnlyContractCanCall());
+  _;
+}
+```
+
+To strictly enforce the use of intents, **ALL other write functions supposed to perform crosschain interactions should have the  onlyContract() modifier**
+
+```solidity SkateNFT.sol
+/// This code snippet show an example stateless NFT app create tasks.
+function mint(
+    address user,
+    address to,
+    uint256 chainId
+)
+    public
+    virtual
+    override
+    onlyContract
+    returns (IMessageBox.Task[] memory tasks)
+{
+    return _mint(user, to, ++_tokenId, chainId);
+}
+
+function _mint(
+    address user,
+    address to,
+    uint256 tokenId_,
+    uint256 chainId
+)
+    internal
+    returns (IMessageBox.Task[] memory tasks)
+{
+    _mint(to, tokenId_, 1, '');
+    _userToTokenIds[to].push(tokenId_);
+    _tokenIdToUser[tokenId_] = to;
+    _tokenIdToChainId[tokenId_] = chainId;
+    emit Minted(to, tokenId_);
+    address peripheryContract = chainIdToPeripheryContract(chainId);
+    // creates a task.
+    tasks = new IMessageBox.Task[](1);
+    tasks[0] = IMessageBox.Task(
+        peripheryContract, // app address,
+        abi.encodeWithSignature('mint(address,uint256)', to, tokenId_),
+        user,
+        chainId
+    );
+}
+```
+
+In the function, you can implement all the necessary application logic, similar to any other smart contract. Additionally, for any function that requires the creation of a task for crosschain interactions, **it should return an array of tasks.** If no crosschain interaction is needed, the function should return an empty task array.
+
+Developers have the flexibility to customize the data used for tasks based on the specific logic of their functions. Tasks are designed to support a wide range of interactions. When crosschain interactions are required, developers must ensure that the correct function calls are specified in the periphery contract.
+
+1. Decoding tasks that were returned from the executed calldata
+
+Processing the tasks that were returned by the executed calldata stated in the intent.
+
+1. Submitting these tasks to the messageBox. 
+
+Executors will be subscribing to the messageBox for any new tasks to be executed and after passing all necessary checks, the intent will be executed on Skate and broadcasted to Executors for them to execute on intended periphery chains. 
+
+## Periphery
+
+For any Stateless App, it must **inherit the SkateAppPeriphery.sol contract.** Since periphery contracts are designed to perform minimal peripheral activities such as transferring assets and providing lookup states derived from Skate, little development work is required here. Nonetheless, here are some key points to take note of:
+
+### 1. SkateGateway as the Main Entry Point
+
+The SkateGateway serves as the central entry point for all interactions with the periphery app. To ensure security and proper routing of functions, periphery write functions must adopt the onlyGateway modifier.
+
+### Example:
+
+```solidity SkateGateway.sol
+modifier onlyGateway() {
+  require(msg.sender == address(_gateway), OnlyGatewayCanCall());
+  _;
+}
+```
+
+This modifier ensures that only the SkateGateway can execute specific functions within the periphery app. Therefore, for all periphery write functions, it is crucial to apply the onlyGateway modifier to enforce this restriction and maintain the integrity of interactions.
+
+## Important things to take note during deployment
+
+### 1. Executors need to be registered on ALL executor registries
+
+<Note>
+To deploy any Stateless app, an executor registry must be specified during contract initialization. To facilitate the necessary intent execution, owners of Stateless apps must whitelist executors on Skate and all peripheral chains. This ensures that the required executors are recognized and authorized across all relevant networks.
+</Note>
+
+### 2. setChainToPeripheryContract
+
+```solidity SkateApp.sol
+/// All Skate stateless apps inherit from SkateApp contract, 
+/// which contains the following function
+function setChainToPeripheryContract(
+    uint256 chainId,
+    address peripheryContract
+)
+    external
+    virtual
+    override
+    onlyOwner
+{
+    if (peripheryContract == address(0x0)) {
+        uint256 length = _chainIds.length;
+        for (uint256 i = 0; i < length; i++) {
+            if (_chainIds[i] == chainId) {
+                _chainIds[i] = _chainIds[length - 1];
+                _chainIds.pop();
+                break;
+            }
+        }
+    } else if (_chainIdToPeripheryContract[chainId] == address(0x0)) {
+        _chainIds.push(chainId);
+    }
+    _chainIdToPeripheryContract[chainId] = peripheryContract;
+    emit PeripheryContractSet(peripheryContract, chainId);
+}
+```
+
+The owner of Stateless apps must call the setChainToPeripheryContract function to update the mapping of chains to periphery contracts. This allows the kernel app to directly retrieve the necessary addresses during task creation.

@@ -1,0 +1,48 @@
+---
+title: "Skate Consensus Mechanism"
+---
+
+Skate Network employs a [Byzantine Fault Tolerant (BFT)](https://www.nervos.org/knowledge-base/BFT\_consensus\_mechanisms\_\(explainCKBot\)) consensus mechanism to ensure the security and integrity of the network.&#x20;
+
+For every round, one validator is chosen to be the block proposer, based on their respective voting power assigned (calculated using the number of tokens they have committed to the network). Validators are chosen as block proposers in a round-robin manner, with the frequency of being selected proportional to their voting power.
+
+The consensus process is divided into rounds, with each round consisting of four main stages:&#x20;
+
+1. **Propose:** The chosen validator proposes a block and gossips it to neighboring peers.&#x20;
+2. **Prevote:** Validators cast their votes on the proposed block.
+3. **Precommit:** Validators decide to sign and broadcast a precommit for a block.
+4. **Commit:** Requires a node to receive and sign a committed block, and to collect commits from at least 2/3 of the network validators, after which it records the commit time and progresses to the next round.
+
+<img src="/images/architecture/consensus.png" style={{ borderRadius: '0.5rem' }} />
+
+#### 1. Propose
+
+In the Propose stage, the chosen validator proposes a block and gossips it to neighboring peers. The proposed block contains a set of transactions that the validator believes should be included in the next block.
+
+#### 2. Prevote
+
+During the Prevote stage, validators cast their votes on the proposed block.
+
+* If a validator is locked on a proposed block from a prior round, it signs and broadcasts a prevote for the locked block.
+* If a validator has received an acceptable proposal for the current round, it signs and broadcasts a prevote for the proposed block.
+* If a validator has received no proposal or an invalid one, it signs a special nil prevote.
+
+#### 3. Precommit
+
+In the Precommit stage, validators make a decision based on the prevotes received.
+
+* If a validator has received more than 2/3 of prevotes for a particular acceptable block, it signs and broadcasts a precommit for that block. The validator also locks onto that block and releases any prior locks. A node can have a lock on at most one block at a time.
+* If a validator has received more than 2/3 of nil prevotes, it simply unlocks.
+* When locking (or unlocking), the node gathers the prevotes for the locked block (or the prevotes for nil) and packages them into a proof-of-lock for later use when it is its turn to propose.
+* If a validator has not received more than 2/3 of prevotes for a particular block (or nil), it does not sign or lock anything.
+
+During the Precommit stage, all nodes gossip all precommits for the round to all neighboring peers.
+
+#### 4. Commit
+
+The Commit stage involves two parallel conditions that must both be satisfied before finalizing the round.
+
+1. The node must receive the block committed by the network if it hasn't already. Once the block is received by a validator, it signs and broadcasts a commit for that block.
+2. The node must wait until it receives at least 2/3 of the commits for the block precommitted by the network.
+
+Once both conditions are satisfied, the node sets its CommitTime to the current time and transitions to the NewHeight step, preparing for the next round.

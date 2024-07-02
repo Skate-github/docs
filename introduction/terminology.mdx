@@ -1,0 +1,11 @@
++ **Actively Validated Services (AVS):** A system that leverages EigenLayer security for secure validation purposes. Use cases could include sidechains, data availability layers, new virtual machines, keeper networks, oracle networks, bridges, threshold cryptography schemes, and much more. For example, Skate relies upon EigenLayer validators for security, who have restaked their ETH and committed is as collateral, enabling Skate to execute transactions with fast finality.
+
++ **Rollup**: A rollup is a layer 2 scaling solution for blockchain networks that aims to increase transaction throughput and reduce fees. It works by bundling multiple transactions together off-chain and then submitting a single proof of these transactions to the Ethereum mainnet.
+
++ **Data Availability Layer**: Data Availability Layers ensure that transaction data is available and accessible as needed. It is responsible for storing and serving the data needed to reconstruct the state of the blockchain. In the context of rollups, the Data Availability Layer allows anyone to reconstruct the full state of the rollup from the data published on the main chain, ensuring transparency and security. Solutions like[ EigenDA](https://www.eigenlayer.xyz/) and[ Celestia](https://celestia.org/) are among the popular options.
+
++ **SkateAVS**: Skate’s AVS contract acts as a single interface for all things Skate-related, such as real-time state synchronizations or transaction execution.
+
++ **SkateSlasher**: Skate Slasher contract that defines slashing logic for Eigenlayer registered operators
+
++ **SkateGatewayApp**: The application's instance on other chains that's used to facilitate asset settlement and cross-chain function calls.

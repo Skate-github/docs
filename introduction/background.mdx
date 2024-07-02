@@ -1,0 +1,63 @@
+---
+title: "Back and Motivation"
+description: "Why does Skate exist? What does Skate solve?"
+---
+
+## Background
+
+### The Rise of Layer 2s
+
+The EVM community has embraced a rollup centric roadmap with Layer 2s becoming the new standard for scaling. This is in turn leading to a rise of custom-purpose L2s and L3s, focused on everything from on-chain gaming to on-chain derivatives.
+
+That being said, scalability and performance remain bottlenecks, which has led to a rise of “modular” blockchains, where each chain is designed to perform specific purposes. For example, L2s are each serving as an execution layer, while Ethereum is being used as the consensus layer, and data availability (DA) solutions such as Celestia as the DA layer.&#x20;
+
+That being said, an unintended consequence has been liquidity fragmentation.
+
+This has become increasingly prevalent with the proliferation of L2s and alternative L1s.
+
+## Motivation
+
+### The Fundamental Flaw in Existing Interoperability Protocols
+
+Many interoperability protocols and chains claim to solve the issue of fragmented liquidity by employing two main mechanisms:&#x20;
+
+1. **New token standards**, or&#x20;
+2. **Aggregating Liquidity** on their native chain through by creating multiple chain-specific tokens and pools.&#x20;
+
+However, upon closer examination, it becomes evident that these approaches can exacerbate the problems they aim to solve.
+
+### The Pitfalls of Crosschain Token Standards
+
+Cross-chain token standards, such as cUSDC, have good intentions but lead to unintended consequences:
+
+* **Competition:** the new token will inevitably compete with the original asset (e.g. USDC) in building deep liquidity pools with other assets. Moreover,
+* **Liquidity Drain:**  the need to maintain the crosschain token will draw away usable liquidity from the original asset, resulting in less overall liquidity for every asset pair and poorer pricing across the board.&#x20;
+
+Introducing new synthetically-backed token variations to consolidate liquidity will only serve to further fragment liquidity and dilute the existing liquidity pool for the underlying asset.
+
+Furthermore, there’s also the idea of maintaining prices for different token pairings on a chain-specific basis (e.g., USDCpolygon, USDCarbitrum). However, this approach is not only impractical in the long run (with 1,000+ networks) but also limits the ability to support a wide variety of tokens while maintaining optimal pricing across numerous pairs.
+
+
+<Frame caption="Skate as an Execution Layer">
+  <img src="/images/introduction/architecture_overview.png" style={{ borderRadius: '0.5rem' }} />
+</Frame>
+
+### The Call for Interoperable Applications
+
+As the blockchain ecosystem continues to evolve the severity of liquidity fragmentation will only intensify. To effectively address this critical issue, interoperability is paramount, and the most promising approach lies in separating assets from pricing.
+
+Dapps today face the challenge of catering to users spread across numerous chains, necessitating the deployment of their applications on multiple platforms. Managing the intricacies of integrating with every chain while ensuring the security of their smart contracts is an extremely daunting task for dApps, especially in the long run.
+
+**The Web3 ecosystem urgently requires a central hub that can act as a bridge between all chains, providing a seamless and efficient way for developers to integrate their applications across the entire blockchain landscape.**&#x20;
+
+By enabling developers to deploy and maintain a single version of their smart contracts on this universal application layer, they can focus on building and refining their applications rather than getting bogged down by the intricacies of cross-chain compatibility.
+
+### The Future is Intent-Centric
+
+One of the most significant obstacles hindering the adoption of decentralized applications (dApps) is the substantial complexity users face when interacting with them. Navigating intricate transaction executions and fragmented infrastructures often leads to suboptimal user experiences, making it difficult to onboard new users and potentially exposing them to exploitation by sophisticated actors.
+
+The intent-centric architecture emerges as a transformative solution to the complexities inherent in current Web3 systems.&#x20;
+
+By allowing users to express their objectives on-chain through signed messages, intents offer a streamlined approach to interacting with dApps. Third-party solvers can then handle the technical intricacies and select the optimal computational path, while users maintain control over their assets. This shift in focus from the "how" to the "what" empowers users to achieve their goals efficiently without the need to oversee implementation details, ultimately making Web3 systems more accessible and user-friendly.
+
+This is what Skate for!

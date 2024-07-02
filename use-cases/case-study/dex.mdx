@@ -1,0 +1,40 @@
+---
+title: "Case Study: Interoperable DEX"
+---
+
+## Sample Flow
+
+Skate streamlines the process of swapping assets across different blockchains while maintaining a unified liquidity pool and a single deployment of a DEX contract on the Skate network.
+
+Key features of the interoperable DEX include:
+
+1. Mapping liquidity across all participating chains
+2. Retrieving swap prices directly through the interoperable DEX contract
+3. Settling asset swaps on their native chains without the need for bridging
+
+Unlike cross-chain token standards, this approach preserves liquidity by avoiding the introduction of additional tokens. Furthermore, all pricing information is retrieved from the Skate, regardless of the liquidity distribution on the various connected chains.
+
+## Sample Flow
+
+<Frame caption="Sample flow of Skate interoperable DEX">
+  <img src="/images/architecture/interoperable-dex.png" alt="interopable-dex" />
+</Frame>
+
+To illustrate the functionality of the interoperable DEX, let's walk through a sample flow:
+
+1. UserA signs an intent using the ERC7521 standard to swap 1 ETH on Solana for USDC on Arbitrum and submits it through the DEX frontend page.
+2. ExecutorB observes the available orders via an API endpoint and decides to fulfill UserA's order.
+3. ExecutorB takes UserA's intent and calls the `fulfilSwapIntent()` function on Skate Chain's Interoperable AMM contract.
+4. The `fulfilSwapIntent()` function generates an on-chain taskId (e.g., taskId = 10) through the Interoperable AMM contract and performs the swap on the liquidity pool.
+5. The executor invokes the `executeTask()` function, specifying taskId 10, on the destination chain, initiating a Skate pull request and emitting an event on the SkateGatewayApp.
+6. The Skate Relayer monitors state events across all chains and relays the request to the Skate Validator Network upon detecting the event.
+   * The relayer creates a task and publishes it for validators.
+7. Skate validators retrieve the task details using the `getTask()` function with taskId 10 and respond by sending the prepared calldata to the relayer.
+   * The relayer aggregates the responses and initiates a consensus mechanism to determine the final outcome.
+   * If a majority consensus is reached, the relayer signs and generates a final result, which is returned to the executor through the frontend.
+8. The executor uses the retrieved calldata to execute `executeSwapIntent()` on the Polygon chain's Skate Interoperable DEX contracts.
+9. The smart contract verifies the authenticity of the calldata by checking the relayer's signature and the validators' responses.
+   * If the calldata is valid, the contract unpacks it into separate calls, each containing a function signature and the required arguments.
+   * The smart contract executes each call iteratively to perform the necessary functions.
+   * If the calldata is invalid, no further execution takes place.
+

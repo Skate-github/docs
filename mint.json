@@ -1,85 +1,92 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Skate Documentations",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/logo/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
-    "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
-    }
+    "primary": "#000",
+    "light": "#C6FF35",
+    "dark": "#000000",
+    "anchors": "#222"
   },
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
-    }
-  ],
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": false
+  },
+  "topbarLinks": [],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Website",
+    "url": "https://skatechain.org"
   },
   "tabs": [
     {
-      "name": "API Reference",
-      "url": "api-reference"
+      "name": "Developers",
+      "url": "developers"
+    },
+    {
+      "name": "FAQ",
+      "url": "faq"
     }
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "name": "Twitter",
+      "icon": "x-twitter",
+      "url": "https://x.com/skate_chain"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
+      "name": "Telegram",
+      "icon": "telegram",
+      "url": "https://t.me/skatechain"
     },
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "name": "Discord",
+      "icon": "discord",
+      "url": "https://discord.com/skatechain"
+    },
+    {
+      "name": "Github",
+      "icon": "github",
+      "url": "https://github.com/Skate-Org"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Introduction",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "introduction/background",
+        "introduction/terminology"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Design Architecture",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "architecture/consensus"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Use Cases",
       "pages": [
-        "api-reference/introduction"
+        "use-cases/case-study/nft-fi",
+        "use-cases/case-study/dex",
+        "use-cases/case-study/crosschain-defi",
+        "use-cases/other"
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Build a Stateless App",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "developers/stateless-app-cookbook"
+      ]
+    },
+    {
+      "group": "General",
+      "pages": [
+        "faq/general",
+        "faq/testnet"
       ]
     }
   ],
