@@ -38,16 +38,6 @@
       "url": "https://x.com/skate_chain"
     },
     {
-      "name": "Telegram",
-      "icon": "telegram",
-      "url": "https://t.me/skatechain"
-    },
-    {
-      "name": "Discord",
-      "icon": "discord",
-      "url": "https://discord.com/skatechain"
-    },
-    {
       "name": "Github",
       "icon": "github",
       "url": "https://github.com/Skate-Org"
