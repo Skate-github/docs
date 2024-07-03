@@ -54,6 +54,8 @@
     {
       "group": "Design Architecture",
       "pages": [
+        "architecture/skate",
+        "architecture/avs",
         "architecture/consensus"
       ]
     },

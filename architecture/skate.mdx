@@ -1,0 +1,69 @@
+---
+title: "Skate Architecture"
+---
+
+Skate envisions a novel approach that enables Stateless Apps to run smoothly across both EVM and non-EVM chains, maintaining a consistent application state throughout. Instead of fragmentation due to siloed deployments on each chain, Skate uses a hub chain to manage the unified state. This innovative strategy addresses the common issues of application fragmentation and operational inefficiencies, offering a cohesive solution for blockchain applications.
+
+## Client Server Architecture
+
+In the realm of traditional computing, the client-server architecture has long been a foundational paradigm, celebrated for its effective resource management, scalability, and security. This model bifurcates the application into two primary components: the server, responsible for hosting and managing resources, and the client, which requests and utilizes these resources. By mirroring this architecture in the blockchain space, Skate introduces a sophisticated approach to application design.
+
+In essence, Skate decouples the core application logic, or kernel, from user interactions, referred to as the periphery. A standard Skate's flow is managed by the following components:
+
+1. __Nollie (EVM Hub Chain)__: Nollie serves as the central hub for _all kernel contracts_, managing the core application logic and maintaining the global state. The testnet is currently built with OP Plasma.
+2. __Preconfirmation AVS (Eigenlayer)__: The Preconfirmation Actively Validated Services (AVS) facilitate secure communication between the kernel and periphery components across different chains. It ensures that intents are validated before execution, maintaining consistency and security.
+3. __Intent Execution Network:__ This network facilitates the execution of user intents on kernel contracts and coordinates with periphery contracts across multiple chains. It utilizes a decentralized group of executors to establish a competitive market for processing user intents, effectively encourage efficient and timely settlement.
+
+<Note>
+  A standard flow through Skate:
+  <ol>
+    <li>
+    Intent creation: Users initiate intents on different originating chains (EVM, TON, Solana, ...). These intents specify the desired actions or outcomes.
+    </li>
+    <li>
+    Intent Execution: Executors pick up these intents and execute the necessary logic on the kernel contract deployed on the Nollie chain. This kernel manages the core state and logic of the application.
+    </li>
+    <li>
+    Preconfirmation AVS: If the execution requires interaction or settlement between the kernel and periphery components on different chains, the Preconfirmation AVS validates these interactions.
+    </li>
+    <li>
+    Settlement: Once validated by the Preconfirmation AVS, the chosen executor carry out relevant interactions between the kernel and the respective periphery contracts on the destination chains.
+    </li>
+  </ol>
+</Note>
+
+## Skate's Kernel and Periphery
+
+Skate's design aims to streamline the development and operation of Web3 applications across multiple blockchain environments. With a single Kernel, apps can maintain one state across all chains, making this approach efficient for state management, with enhanced security and seamless cross-chain interactions.
+
+<Frame caption="Kernel on Skate chain and App gateway on periphery chains">
+  <img src="/images/architecture/skate.jpg" alt="Skate architecture" />
+</Frame>
+
+### Kernel state
+
+The kernel is the core component of a Stateless App, responsible for managing the unified state and executing essential logic. In the context of Skate, kernel contracts are deployed on the Nollie chain, which is based on OP Plasma stack. These contracts are written in Solidity and handle the primary application logic and state transitions
+
+<Frame caption="Kernel flow">
+  <img src="/images/architecture/kernel.jpg" alt="Skate kernel execution" />
+</Frame>
+
+### Periphery gateway
+
+The periphery components handle user interactions and specific functionalities on different blockchain environments. Each periphery contract is tailored to the execution semantic of the respective chain. For instance, on EVM-compatible chains, the periphery contracts are written in Solidity tailored to specific EVM variant, whereas on TON or Solana, they are written in FunC and Rust, respectively. These periphery contracts pull state from the kernel to ensure eventual consistency of user-specific actions.
+
+<Frame caption="Periphery flow">
+  <img src="/images/architecture/periphery.jpg" alt="Skate periphery execution" />
+</Frame>
+
+## EigenLayer shared security for message relaying
+
+In Skate, users initiate actions by creating intents, which consist of tasks to be executed on various destination chains. These intents are picked up by __[executors](#client-server-architecture)__ who compete to resolve them by interacting with the kernel hosted on Nollie chain.
+
+To validate these interactions, all execution calldata must first be verified by the Attestation Verification System (AVS), which relies on EigenLayer stakers for economic security. This process results in preconfirmed execution data, hence the term "Preconfirmation AVS."
+
+Our AVS is developed by leveraging [Othentic's stateless rollup framework](https://othentic.gitbook.io/main/stateless-rollup-framework). In depth details will be discussed in [Skate Preconfirmation AVS](/architecture/avs) section
+
+## Build with Skate
+
+To explore the potential applications of Skate's architecture, please visit our [Use Cases](/use-cases) section.
