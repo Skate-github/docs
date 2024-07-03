@@ -1,5 +1,6 @@
 ---
 title: "Skate Architecture"
+description: "An overview of skate layered architecture to solve state fragmentation"
 ---
 
 Skate envisions a novel approach that enables Stateless Apps to run smoothly across both EVM and non-EVM chains, maintaining a consistent application state throughout. Instead of fragmentation due to siloed deployments on each chain, Skate uses a hub chain to manage the unified state. This innovative strategy addresses the common issues of application fragmentation and operational inefficiencies, offering a cohesive solution for blockchain applications.
@@ -14,23 +15,25 @@ In essence, Skate decouples the core application logic, or kernel, from user int
 2. __Preconfirmation AVS (Eigenlayer)__: The Preconfirmation Actively Validated Services (AVS) facilitate secure communication between the kernel and periphery components across different chains. It ensures that intents are validated before execution, maintaining consistency and security.
 3. __Intent Execution Network:__ This network facilitates the execution of user intents on kernel contracts and coordinates with periphery contracts across multiple chains. It utilizes a decentralized group of executors to establish a competitive market for processing user intents, effectively encourage efficient and timely settlement.
 
-<Note>
-  A standard flow through Skate:
-  <ol>
-    <li>
-    Intent creation: Users initiate intents on different originating chains (EVM, TON, Solana, ...). These intents specify the desired actions or outcomes.
-    </li>
-    <li>
-    Intent Execution: Executors pick up these intents and execute the necessary logic on the kernel contract deployed on the Nollie chain. This kernel manages the core state and logic of the application.
-    </li>
-    <li>
-    Preconfirmation AVS: If the execution requires interaction or settlement between the kernel and periphery components on different chains, the Preconfirmation AVS validates these interactions.
-    </li>
-    <li>
-    Settlement: Once validated by the Preconfirmation AVS, the chosen executor carry out relevant interactions between the kernel and the respective periphery contracts on the destination chains.
-    </li>
-  </ol>
-</Note>
+A standard flow of an interaction with Skate app:
+
+<Steps>
+  <Step title="Intent Creation">
+    Users initiate intents on different originating chains (EVM, TON, Solana, ...). These intents specify the desired actions or outcomes.
+  </Step>
+
+  <Step title="Executor Allocation">
+    Through Skate infrastructures, a network of executors pick up these intents and compete to reserve for settlement of the intents. In the same time, they execute necessary logic on the kernel contract (on the Nollie chain) to update core state and logic of the application.
+  </Step>
+
+  <Step title="Preconfirmation">
+    If the execution requires interaction or settlement between the kernel and periphery components on different chains, the Preconfirmation AVS validates these interactions.
+  </Step>
+
+  <Step title="Settlement">
+    Once validated by the Preconfirmation AVS, the chosen executor carry out relevant interactions between the kernel and the respective periphery contracts on the destination chains.
+  </Step>
+</Steps>
 
 ## Skate's Kernel and Periphery
 

@@ -55,16 +55,28 @@
       "group": "Design Architecture",
       "pages": [
         "architecture/skate",
-        "architecture/avs",
-        "architecture/consensus"
+        {
+          "group": "Skate Components",
+          "pages": [
+            "architecture/kernel",
+            "architecture/avs",
+            "architecture/periphery"
+          ]
+        },
+        "architecture/execution-network"
       ]
     },
     {
       "group": "Use Cases",
       "pages": [
-        "use-cases/case-study/nft-fi",
-        "use-cases/case-study/dex",
-        "use-cases/case-study/crosschain-defi",
+        {
+          "group": "Case Study",
+          "pages": [
+            "use-cases/case-study/nft-fi",
+            "use-cases/case-study/dex",
+            "use-cases/case-study/crosschain-defi"
+          ]
+        },
         "use-cases/other"
       ]
     },
@@ -72,6 +84,32 @@
       "group": "Build a Stateless App",
       "pages": [
         "developers/stateless-app-cookbook"
+      ]
+    },
+    {
+      "group": "EVM",
+      "pages": [
+        "developers/evm/kernel",
+        "developers/evm/periphery"
+      ]
+    },
+    {
+      "group": "Non-EVM",
+      "pages": [
+        {
+          "group": "TON",
+          "pages": [
+            "developers/ton/kernel",
+            "developers/ton/periphery"
+          ]
+        },
+        {
+          "group": "Solana",
+          "pages": [
+            "developers/solana/kernel",
+            "developers/solana/periphery"
+          ]
+        }
       ]
     },
     {
@@ -83,8 +121,9 @@
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "x": "https://x.com/skate_chain",
+    "github": "https://github.com/Skate-Org",
+    "telegram": "https://t.me/skatechain",
+    "discord": "https://discord.com/skatechain"
   }
 }
