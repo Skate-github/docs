@@ -27,6 +27,10 @@
       "url": "developers"
     },
     {
+      "name": "AVS Operators",
+      "url": "operators"
+    },
+    {
       "name": "FAQ",
       "url": "faq"
     }
@@ -110,6 +114,21 @@
             "developers/solana/periphery"
           ]
         }
+      ]
+    },
+    {
+      "group": "General information",
+      "pages": [
+        "operators/general/about",
+        "operators/general/othentic"
+      ]
+    },
+    {
+      "group": "Specialized Roles",
+      "pages": [
+        "operators/roles/aggregator",
+        "operators/roles/performer",
+        "operators/roles/attester"
       ]
     },
     {
