@@ -3,3 +3,46 @@ title: "Skate as a Layer 2"
 description: "Skate's adoption of Optimism Stack"
 ---
 
+## The Rollup
+
+### Overview
+
+The SkateChain Rollup, leveraging an optimistic rollup model, is a fork of the Optimism stack. This document provides a detailed technical overview of the rollup layer, highlighting its key components and functionalities.
+
+### Rollup Layer
+
+The Rollup Layer in SkateChain prioritizes scalability and efficiency using an optimistic rollup model. It processes transactions with a presumption of validity, only requiring computation and verification in the event of disputes. The system currently operates using Ethereum for data availability but is architecturally designed to support other data availability solutions like EigenLayer, Celestia, and Avail in the future.
+
+### Geth
+
+Geth (Go Ethereum) has been adapted to interact not only with the Ethereum mainnet but also with other blockchains, ensuring compatibility for future integrations. Key features include:
+
+1. **Custom RPC Methods**: Implements specific RPC methods to manage interactions between the rollup layer and various blockchains, facilitating operations such as transaction submissions and state queries.
+2. **State Management**: Handles the rollup’s state transitions based on blocks confirmed on the data availability layer, which currently includes Ethereum and potentially others in the future.
+3. **Event Tracking**: Monitors rollup-related events across different blockchain platforms, ensuring the rollup layer can respond and update efficiently.
+
+### Proposer
+
+In the optimistic rollup context, the Proposer’s role is streamlined due to the absence of complex cryptographic proofs. Key responsibilities include:
+
+1. **Block Construction**: Organizes transactions into blocks optimized for speed and cost-effectiveness.
+2. **Submission**: Proposes blocks to the current data availability layer, which is Ethereum, but can be extended to others like EigenLayer, Celestia, or Avail.
+3. **Dispute Handling**: Manages data and computations needed to resolve disputes, providing necessary proofs to uphold transaction validity.
+
+### Batcher
+
+The Batcher efficiently aggregates transactions, preparing them for the Proposer and ensuring scalability. Key functionalities include:
+
+1. **Transaction Collection**: Collects and validates transactions from users, preparing them for batching.
+2. **Optimization**: Implements algorithms to sort and optimize transactions, enhancing throughput and reducing operational costs.
+3. **Batch Preparation**: Prepares transaction batches, equipping them with the metadata required for efficient block construction by the Proposer.
+
+### Op-Node
+
+The Op-Node serves as a critical backend component, ensuring seamless operation across different data availability layers. Key roles include:
+
+1. **Data Availability**: Ensures all transaction data is accessible and verifiable, not only on Ethereum but also on alternative layers like EigenLayer, Celestia, and Avail as they become integrated.
+2. **Coordination**: Manages the interaction between the Batcher and Proposer, overseeing the transaction flow and block proposals in line with network rules.
+3. **Fraud Proofs**: Handles and verifies fraud proofs in the event of disputes, crucial for maintaining the integrity of transactions and the rollup layer.
+
+By leveraging an optimistic rollup model forked from Optimism and integrating support for various data availability solutions, SkateChain Rollup aims to provide a scalable, efficient, and robust platform for decentralized applications.
