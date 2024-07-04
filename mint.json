@@ -71,6 +71,13 @@
       ]
     },
     {
+      "group": "Skate Chain",
+      "pages": [
+        "architecture/blockchain/optimism",
+        "architecture/blockchain/avail"
+      ]
+    },
+    {
       "group": "Use Cases",
       "pages": [
         {
