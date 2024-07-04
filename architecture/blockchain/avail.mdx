@@ -2,3 +2,87 @@
 title: "Data Availability Layer"
 description: "Skate's adoption of ... DA for improved performance"
 ---
+## SkateChain Rollup: Integration with Avail as a Data Availability (DA) Layer
+
+### Overview
+
+This technical documentation provides an in-depth look at how SkateChain Rollup leverages Avail as its Data Availability (DA) layer. It details the interactions between various components of the Optimism (Op) stack and the DA layer, and the benefits of using Avail over Ethereum for data availability.
+
+### Avail as a Data Availability Layer
+
+Avail, is a modular blockchain optimized for data availability. In the context of SkateChain Rollup, Avail provides a scalable and efficient alternative to Ethereum for storing and verifying transaction data.
+
+### Interactions Between Op Stack Components and the DA Layer
+
+#### Geth
+
+**Custom RPC Methods**: 
+- Geth interacts with Avail through specific RPC methods tailored to manage data availability tasks.
+- These methods facilitate operations such as submitting transaction data to Avail and querying the availability status of data blocks.
+
+**State Management**:
+- Geth handles state transitions by referencing data confirmed on Avail. This ensures that the rollup’s state accurately reflects the latest available data.
+
+**Event Tracking**:
+- Geth monitors events related to data availability on Avail, ensuring timely updates and responses to changes in the DA layer.
+
+#### Proposer
+
+**Block Construction**:
+- The Proposer constructs blocks by organizing transactions and referencing data availability proofs from Avail.
+- This process is optimized for speed and cost-effectiveness, leveraging Avail’s efficient data storage mechanisms.
+
+**Submission**:
+- The Proposer submits blocks to Avail, ensuring that transaction data is available for verification and dispute resolution.
+- This interaction can extend to other DA solutions like EigenLayer and Celestia, enhancing flexibility.
+
+**Dispute Handling**:
+- The Proposer manages the data and computations needed to resolve disputes by accessing proofs stored on Avail.
+- This ensures the validity of transactions with minimal computational overhead.
+
+#### Batcher
+
+**Transaction Collection**:
+- The Batcher collects transactions from users and validates them before preparing batches.
+- Data from these transactions is submitted to Avail for availability checks.
+
+**Optimization**:
+- The Batcher optimizes transaction sorting and batching by referencing Avail’s data availability proofs, enhancing throughput and reducing costs.
+
+**Batch Preparation**:
+- The Batcher prepares transaction batches, including metadata required for block construction by the Proposer.
+- This metadata ensures seamless interaction with Avail’s data availability mechanisms.
+
+#### Op-Node
+
+**Data Availability**:
+- The Op-Node ensures all transaction data is accessible and verifiable on Avail.
+- This includes managing the storage and retrieval of data availability proofs, crucial for maintaining the integrity of the rollup.
+
+**Coordination**:
+- The Op-Node oversees interactions between the Batcher, Proposer, and Avail, ensuring smooth transaction flow and block proposals.
+- This coordination is essential for adhering to network rules and maintaining consistency.
+
+**Fraud Proofs**:
+- The Op-Node handles and verifies fraud proofs by referencing data stored on Avail.
+- This function is critical for dispute resolution and maintaining transaction integrity.
+
+### Benefits of Using Avail Over Ethereum
+
+**Scalability**:
+- Avail provides enhanced scalability compared to Ethereum, handling higher transaction volumes with reduced latency.
+- This scalability is crucial for SkateChain Rollup’s goal of efficient transaction processing.
+
+**Cost-Effectiveness**:
+- Avail offers lower operational costs for data availability compared to Ethereum, making transactions more economical.
+- Reduced costs enhance the overall affordability of using SkateChain Rollup for decentralized applications.
+
+**Flexibility**:
+- Avail’s modular architecture allows SkateChain Rollup to integrate additional DA solutions like EigenLayer and Celestia.
+- This flexibility ensures that the rollup can adapt to evolving data availability technologies.
+
+**Efficiency**:
+- Avail’s optimized data storage and retrieval mechanisms improve the efficiency of transaction processing.
+- This efficiency translates to faster block construction and submission, enhancing user experience.
+
+By leveraging Avail as the DA layer, SkateChain Rollup achieves superior scalability, cost-effectiveness, and efficiency, making it a robust platform for decentralized applications. The interactions between the Op stack components and Avail ensure seamless operation and maintain the integrity of the rollup layer.
